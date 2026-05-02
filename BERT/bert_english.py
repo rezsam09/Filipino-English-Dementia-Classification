@@ -14,8 +14,15 @@ and evaluates cross-lingual transfer to Tagalog.
 - **Batch size**: We test two small batch sizes: 4 and 8. These smaller sizes are chosen because of the limited dataset size and allow for more frequent model updates during each training epoch.
 - **Scheduler**: A 'Linear Warmup with Decay' schedule is used for the learning rate. This is a common and effective practice for fine-tuning models from the HuggingFace library.
 - **Evaluation**: We perform a 'Stratified 10-fold Cross-Validation'. Our primary performance metric is 'Macro-F1 Score', and we also specifically track 'Recall' for the dementia class (which is also known as sensitivity).
+### Reproducibility
+
+- All random seeds are fixed to `42`.
+- Install dependencies: `pip install -r requirements_transformers.txt`
+- Place `english.xlsx` and `tagalog.xlsx` in the repo root (or update `DATA_DIR` below).
+
 """
 
+# Install dependencies (uncomment when running in a fresh environment)
 #!pip install transformers==4.44.0 torch scikit-learn accelerate sentencepiece xformers -q
 
 import gc
