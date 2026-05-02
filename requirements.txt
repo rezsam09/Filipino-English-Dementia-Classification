@@ -1,0 +1,10 @@
+transformers==4.44.0
+torch
+scikit-learn
+accelerate
+sentencepiece
+xformers
+pandas
+openpyxl
+numpy
+tqdm
