@@ -13,7 +13,9 @@ This work investigates:
 2. Whether NeoBERT's advances over standard BERT translate into improved cross-lingual robustness in clinical settings.
 3. The extent to which bilingual training can bridge the cross-lingual performance gap.
 
-Our key finding: **training data coverage is a stronger determinant of cross-lingual robustness than architectural design**. Models trained monolingually achieve near-perfect in-domain F1 (≥ 0.98) but collapse under zero-shot transfer (F1 ≤ 0.40), primarily due to failure to detect dementia-class samples. Bilingual training reduces this gap to ∆F1 < 0.01 across all models.
+Our key findings:
+- **Training data coverage is a stronger determinant of cross-lingual robustness than architectural design.** Models trained monolingually achieve near-perfect in-domain F1 (≥ 0.98) but collapse under zero-shot transfer (F1 ≤ 0.40), primarily due to failure to detect dementia-class samples. Bilingual training reduces this gap to ∆F1 < 0.01 across all models.
+- **NeoBERT's architectural and pretraining advances make it more biased toward English, not less.** Despite outperforming BERT in-domain, NeoBERT exhibits a larger cross-lingual degradation gap under monolingual English training (∆F1 = 0.639 vs. 0.595 for BERT). Its advancements cause it to specialize more deeply to its pretraining distribution, making it *more* sensitive to language shift than standard BERT when trained on a single language.
 
 ---
 
