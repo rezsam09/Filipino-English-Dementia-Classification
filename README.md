@@ -1,6 +1,8 @@
 # Forgotten Words: Benchmarking NeoBERT for Dementia Detection in Low-Resource Conversational Filipino and English Speech
 
-Official implementation of *"Forgotten Words"*, submitted to BioNLP @ ACL. This study presents the **first NLP evaluation of dementia classification in conversational Filipino speech**, benchmarking TF-IDF + Logistic Regression, BERT-base-uncased, and NeoBERT across monolingual, cross-lingual zero-shot, and bilingual training configurations.
+Official implementation of *"Forgotten Words: Benchmarking NeoBERT for Dementia Detection in Low-Resource Conversational Filipino and English Speech"*, accepted at **BioNLP @ ACL 2026**.
+
+This study presents the **first NLP evaluation of dementia classification in conversational Filipino speech**, benchmarking TF-IDF + Logistic Regression, BERT-base-uncased, and NeoBERT across monolingual, cross-lingual zero-shot, and bilingual training configurations.
 
 ---
 
@@ -10,12 +12,12 @@ Dementia detection from speech has shown strong performance in English, yet rema
 
 This work investigates:
 1. Whether NLP-based dementia classifiers trained on English generalize to Filipino under zero-shot cross-lingual transfer.
-2. Whether NeoBERT's advances over standard BERT translate into improved cross-lingual robustness in clinical settings.
+2. Whether NeoBERT's architectural advances over standard BERT translate into improved cross-lingual robustness in clinical settings.
 3. The extent to which bilingual training can bridge the cross-lingual performance gap.
 
-Our key findings:
+**Key findings:**
 - **Training data coverage is a stronger determinant of cross-lingual robustness than architectural design.** Models trained monolingually achieve near-perfect in-domain F1 (≥ 0.98) but collapse under zero-shot transfer (F1 ≤ 0.40), primarily due to failure to detect dementia-class samples. Bilingual training reduces this gap to ∆F1 < 0.01 across all models.
-- **NeoBERT's architectural and pretraining advances make it more biased toward English, not less.** Despite outperforming BERT in-domain, NeoBERT exhibits a larger cross-lingual degradation gap under monolingual English training (∆F1 = 0.639 vs. 0.595 for BERT). Its advancements cause it to specialize more deeply to its pretraining distribution, making it *more* sensitive to language shift than standard BERT when trained on a single language.
+- **NeoBERT's architectural and pretraining advances make it more biased toward English, not less.** Despite outperforming BERT in-domain, NeoBERT exhibits a larger cross-lingual degradation gap under monolingual English training (∆F1 = 0.639 vs. 0.595 for BERT). Its advancements cause it to specialize more deeply to its pretraining distribution, making it *more* sensitive to language shift than standard BERT under monolingual training.
 
 ---
 
@@ -23,16 +25,16 @@ Our key findings:
 
 ```
 Filipino-English-Dementia-Classification/
-├── BERT/                          # BERT fine-tuning scripts
-│   ├── bert_english.py            #   Monolingual English training
-│   ├── bert_tagalog.py            #   Monolingual Tagalog training
-│   └── bert_bilingual.py          #   Bilingual (EN + TL) training
-├── NeoBERT/                       # NeoBERT fine-tuning scripts
-│   ├── neobert_english.py         #   Monolingual English training
-│   ├── neobert_tagalog.py         #   Monolingual Tagalog training
-│   └── neobert_bilingual.py       #   Bilingual (EN + TL) training
+├── BERT/                          # BERT fine-tuning notebooks
+│   ├── bert_english.ipynb         #   Monolingual English training
+│   ├── bert_tagalog.ipynb         #   Monolingual Tagalog training
+│   └── bert_bilingual.ipynb       #   Bilingual (EN + TL) training
+├── NeoBERT/                       # NeoBERT fine-tuning notebooks
+│   ├── neobert_english.ipynb      #   Monolingual English training
+│   ├── neobert_tagalog.ipynb      #   Monolingual Tagalog training
+│   └── neobert_bilingual.ipynb    #   Bilingual (EN + TL) training
 ├── Baseline/                      # Non-neural baseline
-│   └── tf_idf_and_lr.py           #   Bigram TF-IDF + Logistic Regression
+│   └── tf_idf_and_lr.ipynb        #   Bigram TF-IDF + Logistic Regression
 ├── requirements_baseline.txt      # Dependencies for the baseline
 ├── requirements_transformers.txt  # Dependencies for BERT / NeoBERT
 └── README.md
@@ -54,7 +56,7 @@ We construct a balanced bilingual dataset of **4,000 conversational transcripts*
 
 **Preprocessing:** Unicode normalization, whitespace normalization, lowercasing. Disfluencies are intentionally retained as clinical markers. No stemming, lemmatization, or syntactic parsing is applied. All inputs are truncated to 128 tokens.
 
-> The dataset files (`english.xlsx`, `tagalog.xlsx`) are not included in this repository. Each file is a headerless two-column Excel sheet: `transcript text | label (0 or 1)`.
+> The dataset files (`english.xlsx`, `tagalog.xlsx`) are not included in this repository due to licensing restrictions. Each file is a headerless two-column spreadsheet: `transcript text | label (0 or 1)`. Please refer to the paper for source details.
 
 ---
 
@@ -67,7 +69,7 @@ Bigram TF-IDF (unigrams + bigrams, max 20,000 features, sublinear TF scaling, `m
 Standard 12-layer BERT encoder fine-tuned end-to-end for binary classification. The default `[CLS]` pooling is replaced with **attention-masked mean pooling** over all final hidden states, which aggregates distributed token-level information and improves robustness under domain shift.
 
 ### NeoBERT (`chandar-lab/NeoBERT`)
-A modernized BERT-style encoder with rotary positional embeddings (RoPE), Pre-LayerNorm with RMSNorm, and a significantly larger curated English pretraining corpus. Fine-tuned with the same pipeline as BERT, enabling a controlled comparison of architectural and pretraining effects. Requires `trust_remote_code=True`.
+A modernized BERT-style encoder with rotary positional embeddings (RoPE), Pre-LayerNorm with RMSNorm, and a significantly larger curated English pretraining corpus. Fine-tuned with the same pipeline as BERT for a controlled comparison of architectural and pretraining effects. Requires `trust_remote_code=True`.
 
 Both transformer models are pretrained **exclusively on English**, ensuring that Filipino performance reflects cross-lingual transfer rather than multilingual pretraining exposure.
 
@@ -76,6 +78,7 @@ Both transformer models are pretrained **exclusively on English**, ensuring that
 ## Experimental Design
 
 ### Training Configurations
+
 | Configuration | Training Data | Evaluation |
 |---|---|---|
 | Monolingual English | English only | English (in-domain), Filipino (zero-shot), Combined |
@@ -83,7 +86,8 @@ Both transformer models are pretrained **exclusively on English**, ensuring that
 | Bilingual | English + Filipino | Combined, English subset, Filipino subset |
 
 ### Hyperparameters
-All transformer models use AdamW (β₁=0.9, β₂=0.999, ε=1e-8), gradient clipping at norm 1.0, linear warmup (10% of steps) + linear decay, dropout p=0.1, and max 10 epochs. Hyperparameters are selected via grid search on a stratified 70–15–15 train/validation/test split.
+
+All transformer models use AdamW (β₁=0.9, β₂=0.999, ε=1e-8), gradient clipping at norm 1.0, linear warmup (10% of steps) + linear decay, dropout p=0.1, and a maximum of 10 epochs. Hyperparameters are selected via grid search on a stratified 70–15–15 train/validation/test split, with early stopping (patience=3) on validation macro-F1.
 
 | Model | Training Config | Batch Size | Learning Rate | Weight Decay |
 |---|---|---|---|---|
@@ -95,12 +99,12 @@ All transformer models use AdamW (β₁=0.9, β₂=0.999, ε=1e-8), gradient cli
 | BERT-base | Bilingual | 4 | 3×10⁻⁵ | 1×10⁻⁵ |
 
 ### Evaluation Protocol
-- **10-fold Stratified K-Fold Cross-Validation** (seed 42), results reported as mean ± std across folds
+- **10-fold Stratified Cross-Validation** (seed 42), results reported as mean ± std across folds
 - **In-domain:** train and test within the same language
 - **Cross-lingual zero-shot:** train on one language, evaluate on the full dataset of the other (never seen during training)
 - **Bilingual:** train on combined corpus, evaluate on mixed-language held-out fold with per-language subsets
 - **Primary metric:** Macro F1 (equal weighting of Healthy and Dementia classes)
-- **Secondary metrics:** Accuracy, per-class F1, Dementia-class recall (sensitivity)
+- **Secondary metrics:** Accuracy, per-class F1, Dementia-class recall (clinical sensitivity)
 - **Cross-lingual generalization gap:** ∆F1 = |F1_in-domain − F1_cross-lingual|
 
 ---
@@ -132,11 +136,11 @@ All transformer models use AdamW (β₁=0.9, β₂=0.999, ε=1e-8), gradient cli
 | NeoBERT | TL | 0.738 / 0.438 / 0.287 | 0.988 / 0.988 / 0.981 | 0.844 / 0.774 / 0.633 |
 | NeoBERT | EN+TL | 0.990 / 0.990 / 0.985 | 0.984 / 0.984 / 0.980 | 0.987 / 0.987 / 0.982 |
 
-**Key findings:**
-- Monolingual models achieve near-perfect in-domain F1 (≥ 0.98) but collapse under zero-shot transfer, driven almost entirely by failure to detect dementia cases (e.g., NeoBERT EN→TL dementia recall = 0.017).
-- NeoBERT matches or exceeds BERT in-domain but shows greater cross-lingual degradation under monolingual English training (∆F1 = 0.639 vs. 0.595), indicating stronger specialization to the training distribution.
+**Key takeaways:**
+- Cross-lingual failure is driven almost entirely by the model's inability to detect dementia cases in the unseen language (e.g., NeoBERT EN→TL dementia recall = 0.017).
+- NeoBERT matches or exceeds BERT in-domain but degrades more sharply under monolingual English zero-shot transfer (∆F1 = 0.639 vs. 0.595).
 - Bilingual training eliminates cross-lingual bias across all models (∆F1 < 0.015), with NeoBERT achieving the smallest gap (0.006) and highest combined F1 (0.987).
-- TF-IDF + LR shows the most severe cross-lingual collapse (F1 = 0.009 on Filipino when trained on English), confirming that contextual representations are necessary for cross-lingual robustness.
+- TF-IDF + LR shows the most severe cross-lingual collapse (Filipino F1 = 0.009 when trained on English), confirming that contextual representations are necessary for any degree of cross-lingual robustness.
 
 ---
 
@@ -146,44 +150,49 @@ All transformer models use AdamW (β₁=0.9, β₂=0.999, ε=1e-8), gradient cli
 # Baseline
 pip install -r requirements_baseline.txt
 
-# BERT / NeoBERT (run on Google Colab with GPU recommended)
+# BERT / NeoBERT
 pip install -r requirements_transformers.txt
 ```
+
+> **GPU strongly recommended.** All transformer notebooks were developed and tested on Google Colab with a GPU runtime. If you are running on Colab, the notebooks install their own dependencies via `!pip install` in the first cell — you do not need to run the requirements file manually.
 
 ---
 
 ## Usage
 
-Place `english.xlsx` and `tagalog.xlsx` in the same directory as the script, then run:
+All experiments are implemented as Jupyter notebooks. Place `english.xlsx` and `tagalog.xlsx` in the same directory as the notebook you want to run, then open it and run all cells.
 
-```bash
-# Baseline
-python Baseline/tf_idf_and_lr.py
+| Notebook | Description |
+|---|---|
+| `Baseline/tf_idf_and_lr.ipynb` | Bigram TF-IDF + Logistic Regression across all configurations |
+| `BERT/bert_english.ipynb` | BERT monolingual English training + evaluation |
+| `BERT/bert_tagalog.ipynb` | BERT monolingual Filipino training + evaluation |
+| `BERT/bert_bilingual.ipynb` | BERT bilingual training + evaluation |
+| `NeoBERT/neobert_english.ipynb` | NeoBERT monolingual English training + evaluation |
+| `NeoBERT/neobert_tagalog.ipynb` | NeoBERT monolingual Filipino training + evaluation |
+| `NeoBERT/neobert_bilingual.ipynb` | NeoBERT bilingual training + evaluation |
 
-# BERT
-python BERT/bert_english.py
-python BERT/bert_tagalog.py
-python BERT/bert_bilingual.py
+Each transformer notebook runs in two stages:
 
-# NeoBERT
-python NeoBERT/neobert_english.py
-python NeoBERT/neobert_tagalog.py
-python NeoBERT/neobert_bilingual.py
-```
+1. **Grid search** over learning rate, weight decay, and batch size on a stratified 70–15–15 split, with early stopping (patience=3) to select the best hyperparameter configuration.
+2. **10-fold stratified cross-validation** using the best configuration. No early stopping is applied during the final CV run to ensure a consistent number of training epochs across folds.
 
-Each transformer script performs hyperparameter grid search, then runs 10-fold cross-validation with the best configuration. Checkpoints are saved after each seed so training can be resumed if interrupted.
+**Checkpointing:** Results are saved to `/content/checkpoints/` after each fold as a `.pkl` file. If a Colab session disconnects, re-running the CV cell will automatically resume from the last completed fold rather than restarting from scratch.
 
 ---
 
 ## Citation
 
+> Full citation details will be updated upon publication of the proceedings.
+
 ```bibtex
-@inproceedings{forgottenwords2025,
+@inproceedings{forgottenwords2026,
   title     = {Forgotten Words: Benchmarking {NeoBERT} for Dementia Detection
                in Low-Resource Conversational {Filipino} and {English} Speech},
   author    = {Anonymous},
-  booktitle = {NA},
-  year      = {2025}
+  booktitle = {Proceedings of the 25th Workshop on Biomedical Language Processing {(BioNLP)}},
+  year      = {2026},
+  note      = {Accepted. Full citation to be updated upon publication.}
 }
 ```
 
