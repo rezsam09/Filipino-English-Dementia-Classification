@@ -152,11 +152,11 @@ python train.py --lang EN+TL
 
 ## Key Findings
 
-**Cross-lingual transfer fails without bilingual training.** English-trained BERT drops from F1 = 0.952 to 0.455 on Filipino. Filipino-trained BERT drops from 0.981 to 0.705 on English. This degradation reflects representational misalignment from language-specific pretraining, not domain shift — the Filipino corpus was constructed from the same source transcripts under controlled conditions.
+**Cross-lingual transfer fails without bilingual training.** English-trained BERT drops from F1 = 0.952 to 0.455 on Filipino. Filipino-trained BERT drops from 0.981 to 0.705 on English. This degradation reflects representational misalignment from language-specific pretraining, not domain shift, the Filipino corpus was constructed from the same source transcripts under controlled conditions.
 
 **Architectural modernization alone does not help.** NeoBERT matches BERT in monolingual performance but exhibits the highest cross-lingual variance of any model (σ = 0.109 on Filipino), suggesting that architectural improvements tighten English-side decision boundaries in ways that reduce tolerance to language shift.
 
-**Multilingual and language-matched models transfer more stably.** XLM-RoBERTa achieves ΔF1 = 0.013 from English to Filipino — the smallest transfer gap under monolingual training. RoBERTa-Tagalog achieves nearly identical English-to-Filipino transfer (ΔF1 = 0.017) despite no explicit multilingual pretraining, likely because conversational Filipino contains extensive English lexical borrowing and code-switching.
+**Multilingual and language-matched models transfer more stably.** XLM-RoBERTa achieves ΔF1 = 0.013 from English to Filipino, the smallest transfer gap under monolingual training. RoBERTa-Tagalog achieves nearly identical English-to-Filipino transfer (ΔF1 = 0.017) despite no explicit multilingual pretraining, likely because conversational Filipino contains extensive English lexical borrowing and code-switching.
 
 **Bilingual fine-tuning resolves cross-lingual gaps across all architectures.** Combined Macro-F1 converges to 0.969–0.973, with dementia recall above 0.93 and consistently low variance across all transformer models. Linguistic coverage during task training is more influential than architecture or scale.
 
