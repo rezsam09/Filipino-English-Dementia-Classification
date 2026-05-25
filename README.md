@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/28224041/README.md)
 # Forgotten Words: Benchmarking NeoBERT for Dementia Detection in Low-Resource Conversational Filipino and English Speech
 
 Official implementation of the paper accepted at **BioNLP @ ACL 2026** — 25th Workshop on Biomedical Language Processing, July 3–4, 2026, San Diego, CA.
