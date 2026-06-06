@@ -179,7 +179,7 @@ Model decision mechanisms in multilingual contexts remain opaque. Clinical deplo
                  in Low-Resource Conversational {F}ilipino and {E}nglish Speech",
     author    = "Floresca, Rez Samantha Z.  and
                  Hao, Edric Castel C.  and
-                 Bu{\~n}ales, Hannah Grachiella  and
+                 Bunales, Hannah Grachiella  and
                  Temprosa, Chelsea Dominique E.  and
                  Reyes, Georgianna Z.  and
                  Chua, Kervin Gabriel L.",
